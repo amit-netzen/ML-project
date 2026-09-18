@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Student Exam Performance Indicator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2130;
+    --paper: #f3f0e8;
+    --panel: #fffdf8;
+    --line: #d9d2c0;
+    --line-soft: #e7e2d5;
+    --muted: #6c6f78;
+    --accent: #a9781f;
+    --accent-dim: #e7d7ae;
+    --focus: #2f5d50;
+    --radius: 3px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px);
+    background-size: 100% 2.1rem;
+    background-attachment: local;
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 3rem 1.25rem 5rem;
+  }
+
+  .sheet {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .sheet-head {
+    padding-bottom: 1.75rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .kicker {
+    font-size: 0.8rem;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+  }
+
+  h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+    line-height: 1.15;
+    margin: 0 0 0.6rem;
+  }
+
+  .subtitle {
+    font-size: 0.98rem;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0;
+    max-width: 46ch;
+  }
+
+  form {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: 0 1px 0 rgba(28, 33, 48, 0.03);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem 1.5rem;
+  }
+
+  .field { display: flex; flex-direction: column; }
+  .field.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+
+  label .unit {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  select, input[type="number"] {
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0.65rem 0.75rem;
+    width: 100%;
+    transition: border-color 0.15s ease;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%236c6f78' stroke-width='1.4' fill='none' fill-rule='evenodd'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    padding-right: 2.2rem;
+  }
+
+  select:invalid { color: var(--muted); }
+
+  select:focus, input:focus {
+    outline: none;
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px rgba(47, 93, 80, 0.12);
+  }
+
+  .divider {
+    grid-column: 1 / -1;
+    border: none;
+    border-top: 1px solid var(--line-soft);
+    margin: 0.2rem 0;
+  }
+
+  .submit-row { grid-column: 1 / -1; margin-top: 0.4rem; }
+
+  button {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--panel);
+    background: var(--ink);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+
+  button:hover { background: var(--focus); }
+  button:focus-visible { outline: 3px solid var(--accent-dim); outline-offset: 2px; }
+
+  .result {
+    margin-top: 1.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.4rem 1.6rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+  }
+
+  .result-score {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 2.4rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .result-score span {
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .result-label {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 560px) {
+    .grid { grid-template-columns: 1fr; }
+    form { padding: 1.5rem; }
+    .result { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+  <main class="sheet">
+    <div class="sheet-head">
+      <p class="kicker">Exam Performance Model</p>
+      <h1>Student Exam Performance Indicator</h1>
+      <p class="subtitle">Enter a student's background and their reading and writing scores to estimate their mathematics score.</p>
+    </div>
+
+    <form action="{{ url_for('predict_datapoint') }}" method="post">
+
+      <div class="grid">
+
+        <div class="field">
+          <label for="gender">Gender</label>
+          <select id="gender" name="gender" required>
+            <option value="" selected disabled>Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="ethnicity">Race or ethnicity</label>
+          <select id="ethnicity" name="ethnicity" required>
+            <option value="" selected disabled>Select group</option>
+            <option value="group A">Group A</option>
+            <option value="group B">Group B</option>
+            <option value="group C">Group C</option>
+            <option value="group D">Group D</option>
+            <option value="group E">Group E</option>
+          </select>
+        </div>
+
+        <div class="field full">
+          <label for="parental_level_of_education">Parental level of education</label>
+          <select id="parental_level_of_education" name="parental_level_of_education" required>
+            <option value="" selected disabled>Select education level</option>
+            <option value="some high school">Some high school</option>
+            <option value="high school">High school</option>
+            <option value="some college">Some college</option>
+            <option value="associate's degree">Associate's degree</option>
+            <option value="bachelor's degree">Bachelor's degree</option>
+            <option value="master's degree">Master's degree</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="lunch">Lunch type</label>
+          <select id="lunch" name="lunch" required>
+            <option value="" selected disabled>Select lunch type</option>
+            <option value="standard">Standard</option>
+            <option value="free/reduced">Free / reduced</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="test_preparation_course">Test preparation course</label>
+          <select id="test_preparation_course" name="test_preparation_course" required>
+            <option value="" selected disabled>Select status</option>
+            <option value="none">None</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="field">
+          <label for="reading_score">Reading score <span class="unit">(0–100)</span></label>
+          <input type="number" id="reading_score" name="reading_score" min="0" max="100" required />
+        </div>
+
+        <div class="field">
+          <label for="writing_score">Writing score <span class="unit">(0–100)</span></label>
+          <input type="number" id="writing_score" name="writing_score" min="0" max="100" required />
+        </div>
+
+        <div class="submit-row">
+          <button type="submit">Predict math score</button>
+        </div>
+
+      </div>
+    </form>
+
+    {% if results is defined and results is not none %}
+    <div class="result">
+      <div class="result-score">{{ results }}<span>/100</span></div>
+      <div class="result-label">Predicted mathematics score, based on the profile and scores entered above.</div>
+    </div>
+    {% endif %}
+
+  </main>
+
+</body>
+</html>

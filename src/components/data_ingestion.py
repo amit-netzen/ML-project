@@ -35,7 +35,7 @@ class DataIngestion:
         try:
 
             # Read the original dataset
-            df = pd.read_csv("../../notebook/data/stud.csv")
+            df = pd.read_csv("notebook/data/stud.csv")
 
             logging.info(
                 "Reading the datasets dataframe"
